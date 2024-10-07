@@ -60,8 +60,8 @@ all: main-build
 main-build: UART_Morse_F4.elf secondary-outputs
 
 # Tool invocations
-UART_Morse_F4.elf UART_Morse_F4.map: $(OBJS) $(USER_OBJS) C:\Users\David\Documents\IoT\UART_Morse_F4\STM32F413ZHTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "UART_Morse_F4.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\David\Documents\IoT\UART_Morse_F4\STM32F413ZHTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="UART_Morse_F4.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+UART_Morse_F4.elf UART_Morse_F4.map: $(OBJS) $(USER_OBJS) C:\Users\David\Documents\GitHub\OperatingSystemsClass\UART_Morse_F4\STM32F413ZHTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "UART_Morse_F4.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\David\Documents\GitHub\OperatingSystemsClass\UART_Morse_F4\STM32F413ZHTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="UART_Morse_F4.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
