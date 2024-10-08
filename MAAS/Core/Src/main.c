@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,7 +45,8 @@ I2S_HandleTypeDef hi2s2;
 DMA_HandleTypeDef hdma_spi2_rx;
 
 /* USER CODE BEGIN PV */
-
+int16_t data_i2s[100];
+volatile int16_t sample_i2s;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,7 +99,7 @@ int main(void)
   MX_DMA_Init();
   MX_I2S2_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_I2S_Receive_DMA(&hi2s2, data_i2s, sizeof(data_i2s)/2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -106,7 +107,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  //printf("Hola mundo.\n");
+	  //HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -227,7 +229,22 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+int _write(int file, char *ptr, int len)
+{
+  (void)file;
+  int DataIdx;
 
+  for (DataIdx = 0; DataIdx < len; DataIdx++)
+  {
+    ITM_SendChar(*ptr++);
+  }
+  return len;
+}
+
+void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
+{
+	sample_i2s = data_i2s[0];
+}
 /* USER CODE END 4 */
 
  /* MPU Configuration */
