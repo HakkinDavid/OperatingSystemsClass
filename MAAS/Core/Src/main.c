@@ -50,7 +50,7 @@ SD_HandleTypeDef hsd1;
 
 /* USER CODE BEGIN PV */
 int16_t data_i2s[WAV_WRITE_SAMPLE_COUNT];
-volatile int16_t sample_i2s;
+//volatile int16_t sample_i2s;
 volatile uint8_t button_flag, start_stop_recording;
 volatile uint8_t half_i2s, full_i2s;
 /* USER CODE END PV */
