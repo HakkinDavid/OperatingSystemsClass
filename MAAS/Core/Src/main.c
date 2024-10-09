@@ -49,8 +49,10 @@ DMA_HandleTypeDef hdma_spi2_rx;
 SD_HandleTypeDef hsd1;
 
 /* USER CODE BEGIN PV */
-int16_t data_i2s[100];
+int16_t data_i2s[WAV_WRITE_SAMPLE_COUNT];
 volatile int16_t sample_i2s;
+volatile uint8_t button_flag, start_stop_recording;
+volatile uint8_t half_i2s, full_i2s;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,7 +108,6 @@ int main(void)
   MX_SDMMC1_SD_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-  HAL_I2S_Receive_DMA(&hi2s2, (uint16_t *) data_i2s, sizeof(data_i2s)/2);
   HAL_Delay(500);
   sd_card_init();
   /* USER CODE END 2 */
@@ -115,9 +116,34 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if (button_flag) {
+		  if (start_stop_recording) {
+			  HAL_I2S_DMAStop(&hi2s2);
+			  start_stop_recording = 0;
+			  stop_recording();
+			  printf("Grabación terminada.\n");
+		  }
+		  else {
+			  start_stop_recording = 1;
+			  start_recording(I2S_AUDIOFREQ_32K);
+			  printf("Grabando...\n");
+			  HAL_I2S_Receive_DMA(&hi2s2, (uint16_t *) data_i2s, sizeof(data_i2s)/2);
+		  }
+		  button_flag = 0;
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  if (start_stop_recording == 1 && half_i2s == 1)
+	  {
+		  write2wave_file(((uint8_t*)data_i2s),	 WAV_WRITE_SAMPLE_COUNT);
+		  half_i2s = 0;
+	  }
+	  if (start_stop_recording == 1 && full_i2s == 1)
+	  {
+		  write2wave_file(((uint8_t*)data_i2s) + WAV_WRITE_SAMPLE_COUNT, WAV_WRITE_SAMPLE_COUNT);
+		  full_i2s = 0;
+	  }
   }
   /* USER CODE END 3 */
 }
@@ -262,11 +288,21 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
+  /*Configure GPIO pin : BlueButton_Pin */
+  GPIO_InitStruct.Pin = BlueButton_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(BlueButton_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pin : SD_Detect_Pin */
   GPIO_InitStruct.Pin = SD_Detect_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(SD_Detect_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
@@ -287,7 +323,19 @@ int _write(int file, char *ptr, int len)
 
 void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
 {
-	sample_i2s = data_i2s[0];
+
+	full_i2s = 1;
+}
+void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
+{
+	//sample_i2s = data_i2s[0];
+	half_i2s = 1;
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	if (GPIO_Pin == BlueButton_Pin) {
+		button_flag = 1;
+	}
 }
 /* USER CODE END 4 */
 

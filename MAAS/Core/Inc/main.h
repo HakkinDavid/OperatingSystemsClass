@@ -57,6 +57,9 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BlueButton_Pin GPIO_PIN_13
+#define BlueButton_GPIO_Port GPIOC
+#define BlueButton_EXTI_IRQn EXTI15_10_IRQn
 #define SD_Detect_Pin GPIO_PIN_0
 #define SD_Detect_GPIO_Port GPIOD
 
