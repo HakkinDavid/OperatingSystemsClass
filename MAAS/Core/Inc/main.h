@@ -60,8 +60,14 @@ void Error_Handler(void);
 #define BlueButton_Pin GPIO_PIN_13
 #define BlueButton_GPIO_Port GPIOC
 #define BlueButton_EXTI_IRQn EXTI15_10_IRQn
-#define SD_Detect_Pin GPIO_PIN_0
-#define SD_Detect_GPIO_Port GPIOD
+#define SD_SCK_Pin GPIO_PIN_5
+#define SD_SCK_GPIO_Port GPIOA
+#define SD_MISO_Pin GPIO_PIN_6
+#define SD_MISO_GPIO_Port GPIOA
+#define SD_MOSI_Pin GPIO_PIN_7
+#define SD_MOSI_GPIO_Port GPIOA
+#define SD_CS_Pin GPIO_PIN_9
+#define SD_CS_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

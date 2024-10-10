@@ -40,7 +40,7 @@ void sd_card_init() {
 	uint8_t test_text[] = "Hola, esto es un texto de prueba.";
 	*/
 	// montando una tarjeta SD
-	sd_result = f_mount(&sdCard,SDPath,1);
+	sd_result = f_mount(&sdCard,"",0);
 	if (sd_result != 0) {
 		printf("Error montando la tarjeta SD: %d \n", sd_result);
 		while(1);
@@ -72,8 +72,8 @@ void sd_card_init() {
 
 void start_recording (uint32_t frequency) {
 
-	static char file_name[] = "w_000.wav";
-	static uint8_t file_counter = 10;
+	static char file_name[] = "MAAS_000.wav";
+	static uint8_t file_counter = 1;
 	int file_number_digits = file_counter;
 	uint32_t byte_rate = frequency * 2 * 2;
 	wav_file_header[24] = (uint8_t) frequency;
@@ -86,12 +86,11 @@ void start_recording (uint32_t frequency) {
 	wav_file_header[31] = (uint8_t)(byte_rate >> 24);
 
 	// definiendo el nombre del archivo
-	file_name[4] = file_number_digits % 10 + 48;
+	file_name[7] = file_number_digits % 10 + 48;
 	file_number_digits /= 10;
-	file_name[3] = file_number_digits % 10 + 48;
+	file_name[6] = file_number_digits % 10 + 48;
 	file_number_digits /= 10;
-	file_name[2] = file_number_digits % 10 + 48;
-	printf("file name %s \n", file_name);
+	file_name[5] = file_number_digits % 10 + 48;
 	file_counter++;
 
 	// creando el archivo
@@ -101,7 +100,7 @@ void start_recording (uint32_t frequency) {
 		while(1);
 	}
 	else {
-		printf("Archivo de prueba creado \n");
+		printf("Archivo de audio %s creado \n", file_name);
 	}
 	wav_file_size = 0;
 
