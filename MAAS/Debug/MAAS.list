@@ -3519,12 +3519,12 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
  8001866:	60bb      	str	r3, [r7, #8]
  8001868:	68bb      	ldr	r3, [r7, #8]
     /**I2S2 GPIO Configuration
-    PC1     ------> I2S2_SD
+    PC3     ------> I2S2_SD
     PB10     ------> I2S2_CK
     PB12     ------> I2S2_WS
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_1;
- 800186a:	2302      	movs	r3, #2
+    GPIO_InitStruct.Pin = GPIO_PIN_3;
+ 800186a:	2308      	movs	r3, #8
  800186c:	f8c7 30a4 	str.w	r3, [r7, #164]	@ 0xa4
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
  8001870:	2302      	movs	r3, #2
