@@ -7,7 +7,7 @@
 ../Core/Src/main.c:292:13:MX_GPIO_Init	1
 ../Core/Src/main.c:328:5:_write	2
 ../Core/Src/main.c:340:6:HAL_I2S_RxCpltCallback	1
-../Core/Src/main.c:345:6:HAL_I2S_RxHalfCpltCallback	1
-../Core/Src/main.c:351:6:HAL_GPIO_EXTI_Callback	2
-../Core/Src/main.c:360:6:MPU_Config	1
-../Core/Src/main.c:391:6:Error_Handler	1
+../Core/Src/main.c:346:6:HAL_I2S_RxHalfCpltCallback	1
+../Core/Src/main.c:353:6:HAL_GPIO_EXTI_Callback	2
+../Core/Src/main.c:362:6:MPU_Config	1
+../Core/Src/main.c:393:6:Error_Handler	1

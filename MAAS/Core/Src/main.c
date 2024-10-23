@@ -339,13 +339,13 @@ int _write(int file, char *ptr, int len)
 
 void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
 {
-	printf('Se ha recibido un bloque entero de audio.');
+	printf("Se ha recibido un bloque entero de audio.");
 
 	full_i2s = 1;
 }
 void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
 {
-	printf('Se ha recibido medio bloque de audio.');
+	printf("Se ha recibido medio bloque de audio.");
 	//sample_i2s = data_i2s[0];
 	half_i2s = 1;
 }

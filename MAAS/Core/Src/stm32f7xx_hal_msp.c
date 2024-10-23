@@ -97,7 +97,7 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
 
   /** Initializes the peripherals clock
   */
-    PeriphClkInitStruct.PLLI2S.PLLI2SN = 96;
+    PeriphClkInitStruct.PLLI2S.PLLI2SN = 160;
     PeriphClkInitStruct.PLLI2S.PLLI2SP = RCC_PLLP_DIV2;
     PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
     PeriphClkInitStruct.PLLI2S.PLLI2SQ = 2;
@@ -142,7 +142,7 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     hdma_spi2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
     hdma_spi2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
     hdma_spi2_rx.Init.Mode = DMA_CIRCULAR;
-    hdma_spi2_rx.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_spi2_rx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
     hdma_spi2_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
     if (HAL_DMA_Init(&hdma_spi2_rx) != HAL_OK)
     {
