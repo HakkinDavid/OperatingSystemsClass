@@ -50,7 +50,7 @@ SPI_HandleTypeDef hspi1;
 
 /* USER CODE BEGIN PV */
 int16_t data_i2s[WAV_WRITE_SAMPLE_COUNT];
-//volatile int16_t sample_i2s;
+volatile int16_t sample_i2s;
 volatile uint8_t button_flag, start_stop_recording;
 volatile uint8_t half_i2s, full_i2s;
 /* USER CODE END PV */
@@ -108,6 +108,7 @@ int main(void)
   MX_SPI1_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
+  HAL_I2S_DMAStop(&hi2s2);
   HAL_Delay(500);
   sd_card_init();
   /* USER CODE END 2 */
@@ -121,12 +122,14 @@ int main(void)
 			  HAL_I2S_DMAStop(&hi2s2);
 			  start_stop_recording = 0;
 			  stop_recording();
+			  half_i2s = 0;
+			  full_i2s = 0;
 			  printf("Grabación terminada.\n");
 		  }
 		  else {
 			  start_stop_recording = 1;
 			  start_recording(I2S_AUDIOFREQ_32K);
-			  printf("Grabando...\n");
+			  printf("Grabando... (banderas en %d y %d)\n", half_i2s, full_i2s);
 			  HAL_I2S_Receive_DMA(&hi2s2, (uint16_t *) data_i2s, sizeof(data_i2s)/2);
 		  }
 		  button_flag = 0;
@@ -346,7 +349,7 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
 void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
 {
 	printf("Se ha recibido medio bloque de audio.");
-	//sample_i2s = data_i2s[0];
+	sample_i2s = data_i2s[0];
 	half_i2s = 1;
 }
 
