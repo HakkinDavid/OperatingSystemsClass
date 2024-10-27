@@ -3916,13 +3916,13 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
  8001ace:	4b17      	ldr	r3, [pc, #92]	@ (8001b2c <HAL_I2S_MspInit+0x130>)
  8001ad0:	f44f 6280 	mov.w	r2, #1024	@ 0x400
  8001ad4:	611a      	str	r2, [r3, #16]
-    hdma_spi2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+    hdma_spi2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
  8001ad6:	4b15      	ldr	r3, [pc, #84]	@ (8001b2c <HAL_I2S_MspInit+0x130>)
- 8001ad8:	f44f 6200 	mov.w	r2, #2048	@ 0x800
+ 8001ad8:	f44f 5280 	mov.w	r2, #4096	@ 0x1000
  8001adc:	615a      	str	r2, [r3, #20]
-    hdma_spi2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+    hdma_spi2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
  8001ade:	4b13      	ldr	r3, [pc, #76]	@ (8001b2c <HAL_I2S_MspInit+0x130>)
- 8001ae0:	f44f 5200 	mov.w	r2, #8192	@ 0x2000
+ 8001ae0:	f44f 4280 	mov.w	r2, #16384	@ 0x4000
  8001ae4:	619a      	str	r2, [r3, #24]
     hdma_spi2_rx.Init.Mode = DMA_CIRCULAR;
  8001ae6:	4b11      	ldr	r3, [pc, #68]	@ (8001b2c <HAL_I2S_MspInit+0x130>)
