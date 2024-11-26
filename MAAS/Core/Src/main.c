@@ -44,7 +44,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 I2S_HandleTypeDef hi2s2;
-DMA_HandleTypeDef hdma_spi2_rx;
 
 SPI_HandleTypeDef hspi1;
 
@@ -56,13 +55,13 @@ int16_t data_i2s[WAV_WRITE_SAMPLE_COUNT];
 volatile int16_t sample_i2s;
 volatile uint8_t button_flag, start_stop_recording;
 volatile uint8_t half_i2s, full_i2s;
+int incremental_address = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MPU_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_DMA_Init(void);
 static void MX_I2S2_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM2_Init(void);
@@ -108,7 +107,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_I2S2_Init();
   MX_SPI1_Init();
   MX_FATFS_Init();
@@ -146,15 +144,19 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  if (start_stop_recording == 1 && half_i2s == 1)
+	  if (start_stop_recording == 1 && (half_i2s || HAL_GPIO_ReadPin(MIC_SENSE_GPIO_Port, MIC_SENSE_Pin) && incremental_address == 0) == 1)
 	  {
+		  printf("Se ha recibido medio bloque de audio.");
 		  write2wave_file(((uint8_t*)data_i2s),	 WAV_WRITE_SAMPLE_COUNT);
 		  half_i2s = 0;
+		  incremental_address = 1;
 	  }
-	  if (start_stop_recording == 1 && full_i2s == 1)
+	  if (start_stop_recording == 1 && (full_i2s || HAL_GPIO_ReadPin(MIC_SENSE_GPIO_Port, MIC_SENSE_Pin) && incremental_address == 1) == 1)
 	  {
+		  printf("Se ha recibido un bloque entero de audio.");
 		  write2wave_file(((uint8_t*)data_i2s) + WAV_WRITE_SAMPLE_COUNT, WAV_WRITE_SAMPLE_COUNT);
 		  full_i2s = 0;
+		  incremental_address = 0;
 	  }
   }
   /* USER CODE END 3 */
@@ -223,7 +225,7 @@ static void MX_I2S2_Init(void)
 
   /* USER CODE END I2S2_Init 1 */
   hi2s2.Instance = SPI2;
-  hi2s2.Init.Mode = I2S_MODE_MASTER_RX;
+  hi2s2.Init.Mode = I2S_MODE_SLAVE_RX;
   hi2s2.Init.Standard = I2S_STANDARD_PHILIPS;
   hi2s2.Init.DataFormat = I2S_DATAFORMAT_24B;
   hi2s2.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
@@ -399,22 +401,6 @@ static void MX_TIM3_Init(void)
 }
 
 /**
-  * Enable DMA controller clock
-  */
-static void MX_DMA_Init(void)
-{
-
-  /* DMA controller clock enable */
-  __HAL_RCC_DMA1_CLK_ENABLE();
-
-  /* DMA interrupt init */
-  /* DMA1_Stream1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
-
-}
-
-/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -438,6 +424,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(BlueButton_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : MIC_SENSE_Pin */
+  GPIO_InitStruct.Pin = MIC_SENSE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(MIC_SENSE_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SD_CS_Pin */
   GPIO_InitStruct.Pin = SD_CS_Pin;
@@ -469,13 +461,10 @@ int _write(int file, char *ptr, int len)
 
 void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
 {
-	printf("Se ha recibido un bloque entero de audio.");
-
 	full_i2s = 1;
 }
 void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
 {
-	printf("Se ha recibido medio bloque de audio.");
 	sample_i2s = data_i2s[0];
 	half_i2s = 1;
 }
