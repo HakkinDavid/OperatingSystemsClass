@@ -62,6 +62,8 @@ void Error_Handler(void);
 #define BlueButton_Pin GPIO_PIN_13
 #define BlueButton_GPIO_Port GPIOC
 #define BlueButton_EXTI_IRQn EXTI15_10_IRQn
+#define MIC_SENSE_Pin GPIO_PIN_0
+#define MIC_SENSE_GPIO_Port GPIOC
 #define PWM_CK_Pin GPIO_PIN_3
 #define PWM_CK_GPIO_Port GPIOA
 #define SD_SCK_Pin GPIO_PIN_5
